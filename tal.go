@@ -1,3 +1,5 @@
+//Pacakge tal provides a parser implementation of Time-stamped Annotation lists (TAL).
+//TALs format is described on the EDF+ specification: https://www.edfplus.info/specs/edfplus.html#TALs
 package tal
 
 import (
@@ -21,16 +23,22 @@ const (
 	TOKEN_END        = '\x00'
 )
 
+//TimeStamp struct represents the annotation timestamp
 type TimeStamp struct {
 	OnSet    time.Duration
 	Duration time.Duration
 }
 
+
+//Tal struct represents a full set of annotations having the same timestamp
 type Tal struct {
 	Stamp      TimeStamp
 	Annotation []byte
 }
 
+
+//Function Parse assumes arg sample is the raw bytes of the annotation signal
+//returns an array of tals and the error if something went wrong
 func Parse(sample []byte) ([]Tal, error) {
 
     var result []Tal
@@ -128,8 +136,7 @@ func parseStamp(sample []byte) (TimeStamp, int, error) {
 	return result, i + 1, nil
 }
 
-//abc\x14dec\x14\x00
-//abc\x14\x00\x00
+
 func parseAnnotation(sample []byte) ([]byte, int, error) {
 
 	l := len(sample)
@@ -153,7 +160,6 @@ func parseAnnotation(sample []byte) ([]byte, int, error) {
 	}
 
 	return ann, pos, nil
-	//return []byte{},0,nil
 }
 
 func nextToken(input []byte) (pos int, end bool) {
