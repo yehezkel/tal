@@ -76,6 +76,78 @@ func TestParseAnnotation(t *testing.T) {
 }
 
 
+func TestTimeStampNoSign(t *testing.T) {
+
+    input := "120\x151\x14test\x14\x00"
+    _, _, err := parseStamp([]byte(input))
+    if err == nil {
+        t.Errorf("No error given but expecting: %s", invalidChar)
+        return
+    }
+
+    if err != invalidChar {
+        t.Errorf("Non expected error: %s expecting %s", err, invalidChar)
+    }
+}
+
+
+
+func TestTimeIncompleted(t *testing.T) {
+
+    table := []string{
+        "+",
+        "+8\x15",
+        "+8\x151",
+    }
+
+    for _, input := range table {
+        _, _, err := parseStamp([]byte(input))
+        if err == nil {
+            t.Errorf("No error given but expecting: %s", incompleteAnn)
+            continue
+        }
+
+        if err != incompleteAnn {
+            t.Errorf("Non expected error: %s expecting %s", err, incompleteAnn)
+        }
+    }
+}
+
+func TestTimeInvalid(t *testing.T) {
+
+    table := []string{
+        ".12\x14123\x14\x00",
+        "-1\x00",
+    }
+
+    for _, input := range table {
+        _, _, err := parseStamp([]byte(input))
+        if err == nil {
+            t.Errorf("No error given but expecting: %s", invalidChar)
+            continue
+        }
+
+        if err != invalidChar {
+            t.Errorf("Non expected error: %s expecting %s", err, invalidChar)
+        }
+    }
+}
+
+func TestTimeStampBadNumber(t *testing.T) {
+
+    table := []string{
+        "-ab\x14123\x14\x00",
+        "-1\x15ab\x14\x00",
+    }
+
+    for _, input := range table {
+        _, _, err := parseStamp([]byte(input))
+        if err == nil {
+            t.Errorf("No error given but expecting strconv.ParseFloat erro")
+        }
+    }
+}
+
 
 func TestParse(t *testing.T) {
 
