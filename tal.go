@@ -38,7 +38,7 @@ func Parse(sample []byte) ([]Tal, error) {
 
     for  i < l {
 
-        stamp, j, err := parseStamp(sample)
+        stamp, j, err := parseStamp(sample[i:])
         if err != nil {
             return result, err
         }

@@ -121,6 +121,14 @@ func TestParse(t *testing.T) {
                 FlatTal {"120.3s","0.5s","test2"},
             },
         },
+        Iteration{
+            "+120\x14test\x14\x00+120.3\x150.5\x14test\x14test2\x14\x00",
+            []FlatTal{
+                FlatTal {"120s","0s","test"},
+                FlatTal {"120.3s","0.5s","test"},
+                FlatTal {"120.3s","0.5s","test2"},
+            },
+        },
     }
 
     for _, current := range table {
