@@ -29,55 +29,52 @@ type TimeStamp struct {
 	Duration time.Duration
 }
 
-
 //Tal struct represents a full set of annotations having the same timestamp
 type Tal struct {
 	Stamp      TimeStamp
 	Annotation []byte
 }
 
-
 //Function Parse assumes arg sample is the raw bytes of the annotation signal
 //returns an array of tals and the error if something went wrong
 func Parse(sample []byte) ([]Tal, error) {
 
-    var result []Tal
-    i, l := 0, len(sample)
+	var result []Tal
+	i, l := 0, len(sample)
 
-    for  i < l {
+	for i < l {
 
-        stamp, j, err := parseStamp(sample[i:])
-        if err != nil {
-            return result, err
-        }
+		stamp, j, err := parseStamp(sample[i:])
+		if err != nil {
+			return result, err
+		}
 
-        i += j
-        for ;; {
+		i += j
+		for {
 
-            ann, j, err := parseAnnotation(sample[i:])
-            if err != nil {
-                return result, err
-            }
+			ann, j, err := parseAnnotation(sample[i:])
+			if err != nil {
+				return result, err
+			}
 
-            i += j
+			i += j
 
-            result = append(result, Tal{
-                stamp,
-                ann,
-            })
+			result = append(result, Tal{
+				stamp,
+				ann,
+			})
 
-            //if amount bytes consumed is bigger
-            //than length of annotation plus the TOKEN_ANNOTATION it means
-            //TOKEN_END(s) were consumed so we should have a time stamp next
-            if j > len(ann) + 1 {
-                break
-            }
+			//if amount bytes consumed is bigger
+			//than length of annotation plus the TOKEN_ANNOTATION it means
+			//TOKEN_END(s) were consumed so we should have a time stamp next
+			if j > len(ann)+1 {
+				break
+			}
 
+		}
+	}
 
-        }
-    }
-
-    return result, nil
+	return result, nil
 }
 
 func parseStamp(sample []byte) (TimeStamp, int, error) {
@@ -135,7 +132,6 @@ func parseStamp(sample []byte) (TimeStamp, int, error) {
 
 	return result, i + 1, nil
 }
-
 
 func parseAnnotation(sample []byte) ([]byte, int, error) {
 
