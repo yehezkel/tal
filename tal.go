@@ -58,6 +58,9 @@ func Parse(sample []byte) ([]Tal, error) {
                 ann,
             })
 
+            //if amount bytes consumed is bigger
+            //than length of annotation plus the TOKEN_ANNOTATION it means
+            //TOKEN_END(s) were consumed so we should have a time stamp next
             if j > len(ann) + 1 {
                 break
             }
